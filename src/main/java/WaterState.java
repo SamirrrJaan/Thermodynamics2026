@@ -39,6 +39,7 @@ public class WaterState {
         this.entropy = entropy;
         this.dryness = dryness;
         fillOtherParameters();
+        selection = -100500;
     }
 
     //Возможные комбинации параметров входных:
@@ -98,6 +99,7 @@ public class WaterState {
         enthalpy = (double) Math.round(enthalpy * howMuchDigits) / howMuchDigits;
         entropy = (double) Math.round(entropy * howMuchDigits) / howMuchDigits;
         dryness = (double) Math.round(dryness * howMuchDigits) / howMuchDigits;
+        selection = (double) Math.round(selection * howMuchDigits) / howMuchDigits;
     }
 
     public void printParameters() {
@@ -114,29 +116,24 @@ public class WaterState {
     public String[] getParameters() {
         temperature -= 273.15;
         temperature = (double) Math.round(temperature * 3) / 3;
+        String drynessStr = "" + dryness;
+        String selectionStr = "" + selection;
         if(dryness > 1 || dryness < 0) {
-            return new String[]{
-                    name,
-                    "" + pressure,
-                    "" + temperature,
-                    "" + volume,
-                    "" + enthalpy,
-                    "" + entropy,
-                    "-",
-                    "" + selection
-            };
-        } else {
-            return new String[]{
-                    name,
-                    "" + pressure,
-                    "" + temperature,
-                    "" + volume,
-                    "" + enthalpy,
-                    "" + entropy,
-                    "" + dryness,
-                    "" + selection
-            };
+            drynessStr = "-";
         }
+        if(selection == -100500) {
+            selectionStr = "-";
+        }
+        return new String[]{
+                name,
+                "" + pressure,
+                "" + temperature,
+                "" + volume,
+                "" + enthalpy,
+                "" + entropy,
+                drynessStr,
+                selectionStr
+        };
     }
 
     public double getP() {
@@ -187,11 +184,12 @@ public class WaterState {
         this.dryness = dryness;
     }
 
-    public double getA() {
+    public double getSelection() {
         return selection;
     }
 
-    public void setA(double selection) {
+    public void setSelection(double selection) {
         this.selection = selection;
+        roundEverything();
     }
 }

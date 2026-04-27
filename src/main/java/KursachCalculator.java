@@ -219,7 +219,7 @@ public class KursachCalculator {
         );
         wsList.add(ws10);
 
-        WaterState wsПВ = new WaterState(
+        WaterState ws_pv = new WaterState(
                 "Точка пв",
                 ws0.getP(), //p
                 tпв, //t
@@ -228,7 +228,7 @@ public class KursachCalculator {
                 -1, //s
                 -1 //x
         );
-        wsList.add(wsПВ);
+        wsList.add(ws_pv);
 
         WaterState ws11 = new WaterState(
                 "Точка 11",
@@ -241,8 +241,8 @@ public class KursachCalculator {
         );
         wsList.add(ws11);
 
-        WaterState wsДР_С = new WaterState(
-                "Точка 11",
+        WaterState ws_dr_s = new WaterState(
+                "Точка др_с",
                 ws2.getP(), //p
                 -1, //t
                 -1, //v
@@ -250,10 +250,10 @@ public class KursachCalculator {
                 -1, //s
                 0 //x
         );
-        wsList.add(wsДР_С);
+        wsList.add(ws_dr_s);
 
-        WaterState wsДР_ПП = new WaterState(
-                "Точка 11",
+        WaterState ws_dr_pp = new WaterState(
+                "Точка др_пп",
                 ws11.getP(), //p
                 -1, //t
                 -1, //v
@@ -261,9 +261,9 @@ public class KursachCalculator {
                 -1, //s
                 0 //x
         );
-        wsList.add(wsДР_ПП);
+        wsList.add(ws_dr_pp);
 
-        WaterState wsОТ1t = new WaterState(
+        WaterState ws_ot_1t = new WaterState(
                 "Точка от1t",
                 if97.saturationPressureT(tпв + delta_t), //p
                 -1, //t
@@ -272,31 +272,31 @@ public class KursachCalculator {
                 ws1.getS(), //s
                 -1 //x
         );
-        wsList.add(wsОТ1t);
+        wsList.add(ws_ot_1t);
 
-        WaterState wsОТ1 = new WaterState(
+        WaterState ws_ot_1 = new WaterState(
                 "Точка от1",
-                wsОТ1t.getP(), //p
+                ws_ot_1t.getP(), //p
                 -1, //t
                 -1, //v
-                (ws1.getH() - (ws1.getH() - wsОТ1t.getH())*eta_oi_ЧВД), //h
+                (ws1.getH() - (ws1.getH() - ws_ot_1t.getH())*eta_oi_ЧВД), //h
                 -1, //s
                 -1 //x
         );
-        wsList.add(wsОТ1);
+        wsList.add(ws_ot_1);
 
-        WaterState wsДР1 = new WaterState(
+        WaterState ws_dr_1 = new WaterState(
                 "Точка др1",
-                wsОТ1.getP(), //p
+                ws_ot_1.getP(), //p
                 -1, //t
                 -1, //v
                 -1, //h
                 -1, //s
                 0 //x
         );
-        wsList.add(wsДР1);
+        wsList.add(ws_dr_1);
 
-        WaterState wsОТ2t = new WaterState(
+        WaterState ws_ot_2t = new WaterState(
                 "Точка от2t",
                 if97.saturationPressureT(ws9.getT() + delta_t), //p
                 -1, //t
@@ -305,20 +305,20 @@ public class KursachCalculator {
                 ws4.getS(), //s
                 -1 //x
         );
-        wsList.add(wsОТ2t);
+        wsList.add(ws_ot_2t);
 
-        WaterState wsОТ2 = new WaterState(
+        WaterState ws_ot_2 = new WaterState(
                 "Точка от2",
-                wsОТ2t.getP(), //p
+                ws_ot_2t.getP(), //p
                 -1, //t
                 -1, //v
-                (ws4.getH() - (ws4.getH() - wsОТ2t.getH())*eta_oi_ЧНД), //h
+                (ws4.getH() - (ws4.getH() - ws_ot_2t.getH())*eta_oi_ЧНД), //h
                 -1, //s
                 -1 //x
         );
-        wsList.add(wsОТ2);
+        wsList.add(ws_ot_2);
 
-        WaterState wsОТ3t = new WaterState(
+        WaterState ws_ot_3t = new WaterState(
                 "Точка от3t",
                 if97.saturationPressureT(ws8.getT() + delta_t), //p
                 -1, //t
@@ -327,34 +327,80 @@ public class KursachCalculator {
                 ws4.getS(), //s
                 -1 //x
         );
-        wsList.add(wsОТ3t);
+        wsList.add(ws_ot_3t);
 
-        WaterState wsОТ3 = new WaterState(
+        WaterState ws_ot_3 = new WaterState(
                 "Точка от3",
-                wsОТ3t.getP(), //p
+                ws_ot_3t.getP(), //p
                 -1, //t
                 -1, //v
-                (ws4.getH() - (ws4.getH() - wsОТ3t.getH())*eta_oi_ЧНД), //h
+                (ws4.getH() - (ws4.getH() - ws_ot_3t.getH())*eta_oi_ЧНД), //h
                 -1, //s
                 -1 //x
         );
-        wsList.add(wsОТ3);
+        wsList.add(ws_ot_3);
 
-        WaterState wsДР3 = new WaterState(
+        WaterState ws_dr_3 = new WaterState(
                 "Точка др3",
-                wsОТ3.getP(), //p
+                ws_ot_3.getP(), //p
                 -1, //t
                 -1, //v
                 -1, //h
                 -1, //s
                 0 //x
         );
-        wsList.add(wsДР3);
+        wsList.add(ws_dr_3);
+        double alpha_ot_1;
+        double alpha_ot_2;
+        double alpha_ot_3;
+        double alpha_dr_s ;
+        double alpha_dr_pp;
+        double alpha_pv;
 
-        for(WaterState ws: wsList) {
-            ws.printParameters();
-        }
+        alpha_dr_s = ( ( H(ws_ot_1) - H(ws_dr_1) )/( H(ws_pv) - H(ws10) ) -1 ) /
+                /**/( ( (H(ws_dr_s) - H(ws3))/( H(ws3) - H(ws2) ) ) * ( ((H(ws3) - H(ws4))/(H(ws11) - H(ws_dr_pp))) - ((H(ws_ot_1) - H(ws_dr_1) )/(H(ws_pv) - H(ws10))) ) );/**/
+        System.out.println("alpha_dr_s " + alpha_dr_s);
+        ws_dr_s.setSelection(alpha_dr_s);
 
+        alpha_ot_1 = 1 + ( H(ws_dr_s) - H(ws3) ) / (H(ws3) - H(ws2)) * alpha_dr_s;
+        System.out.println("alpha_ot1 " + alpha_ot_1);
+        ws_ot_1.setSelection(alpha_ot_1);
+
+        alpha_dr_pp = ( H(ws_ot_1) - H(ws_dr_1) )/( H(ws_pv) - H(ws10) ) * alpha_ot_1 - 1;
+        System.out.println("alpha_dr_pp " + alpha_dr_pp);
+        ws_dr_pp.setSelection(alpha_dr_pp);
+
+        alpha_ot_2 = ((1 + alpha_dr_pp) * H(ws9) - alpha_ot_1 * H(ws_dr_1) - alpha_dr_pp * H(ws_dr_pp) - H(ws8) + alpha_ot_1 * H(ws8)) / (H(ws_ot_2) - H(ws8));
+        System.out.println("alpha_ot2 " + alpha_ot_2);
+        ws_ot_2.setSelection(alpha_ot_2);
+
+        alpha_ot_3 = ( (1 - alpha_ot_1 - alpha_ot_2) * (H(ws8) - H(ws7)) - alpha_dr_s * (H(ws_dr_s) - H(ws_dr_3))) / (H(ws_ot_3) - H(ws_dr_3));
+        System.out.println("alpha_ot3 " + alpha_ot_3);
+        ws_ot_3.setSelection(alpha_ot_3);
+
+        ws1.setSelection(1);
+        ws2.setSelection(1-alpha_ot_1);
+        ws3.setSelection(1 - alpha_ot_1 - alpha_dr_s);
+        ws4.setSelection(ws3.getSelection());
+        ws5.setSelection(ws4.getSelection() - alpha_ot_2 - alpha_ot_3);
+        ws6.setSelection(1 - alpha_ot_1 - alpha_ot_2);
+        ws7.setSelection(ws6.getSelection());
+        ws8.setSelection(ws7.getSelection());
+        ws9.setSelection(1 + alpha_dr_pp);
+        ws10.setSelection(ws9.getSelection());
+        ws_pv.setSelection(ws10.getSelection());
+        ws11.setSelection(alpha_dr_pp);
+        ws0.setSelection(ws_pv.getSelection());
+        ws_dr_1.setSelection(alpha_ot_1);
+
+//        for(WaterState ws: wsList) {
+//            ws.printParameters();
+//        }
+
+    }
+
+    private double H(WaterState ws) {
+        return ws.getH();
     }
 
     private void createTable() throws IOException {
