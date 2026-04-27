@@ -92,14 +92,25 @@ public class WaterState {
     private void roundEverything() {
         //Сколько знаков после запятой оставлять:
         int howMuchDigits = 3;
-        howMuchDigits = (int) Math.pow(10, howMuchDigits);
-        pressure = (double) Math.round(pressure * howMuchDigits) / howMuchDigits;
-        temperature = (double) Math.round(temperature * howMuchDigits) / howMuchDigits;
-        volume = (double) Math.round(volume * howMuchDigits) / howMuchDigits;
-        enthalpy = (double) Math.round(enthalpy * howMuchDigits) / howMuchDigits;
-        entropy = (double) Math.round(entropy * howMuchDigits) / howMuchDigits;
-        dryness = (double) Math.round(dryness * howMuchDigits) / howMuchDigits;
-        selection = (double) Math.round(selection * howMuchDigits) / howMuchDigits;
+        pressure = roundLikeASamirrrJaan(pressure, howMuchDigits);
+        temperature = roundLikeASamirrrJaan(temperature, howMuchDigits);
+        volume = roundLikeASamirrrJaan(volume, howMuchDigits);
+        enthalpy = roundLikeASamirrrJaan(enthalpy, howMuchDigits);
+        entropy = roundLikeASamirrrJaan(entropy, howMuchDigits);
+        dryness = roundLikeASamirrrJaan(dryness, howMuchDigits);
+        selection = roundLikeASamirrrJaan(selection, howMuchDigits);
+    }
+
+    private double roundLikeASamirrrJaan(double whatToRound, int howFarFromDot) {
+        String s = "" + whatToRound;
+        for(int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '.') {
+                if(i + howFarFromDot + 1 <= s.length()) {
+                    s = s.substring(0, i + howFarFromDot + 1);
+                }
+            }
+        }
+        return Double.parseDouble(s);
     }
 
     public void printParameters() {
@@ -115,7 +126,7 @@ public class WaterState {
 
     public String[] getParameters() {
         temperature -= 273.15;
-        temperature = (double) Math.round(temperature * 3) / 3;
+        temperature = roundLikeASamirrrJaan(temperature, 3);
         String drynessStr = "" + dryness;
         String selectionStr = "" + selection;
         if(dryness > 1 || dryness < 0) {
