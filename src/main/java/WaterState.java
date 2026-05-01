@@ -1,9 +1,9 @@
 import com.hummeling.if97.IF97;
 
 public class WaterState {
-    private IF97 if97 = new IF97();
+    private final IF97 if97 = new IF97();
 
-    private String name;
+    private final String name;
     private double pressure;
     private double temperature;
     private double volume;

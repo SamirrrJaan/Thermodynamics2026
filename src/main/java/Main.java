@@ -9,5 +9,12 @@ public class Main {
                 4,
                 185);
 
+//        KursachCalculator kgen = new KursachCalculator("Лебедев",
+//                2900,
+//                5.4,
+//                0.64,
+//                3,
+//                175);
+
     }
 }

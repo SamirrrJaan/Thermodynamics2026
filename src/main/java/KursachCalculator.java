@@ -1,5 +1,6 @@
 import com.hummeling.if97.IF97;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 
@@ -10,27 +11,27 @@ import java.util.ArrayList;
 
 public class KursachCalculator {
 
-    private String name;
+    private final String name;
 
     //Начальные параметры общие
-    private double x0 = 1;
-    private double xc = 0.98;
-    private double delta_tпп = 20;
-    private double delta_t = 5;
-    private double pкн = 1.5;
+    private final double x0 = 1;
+    private final double xc = 0.98;
+    private final double delta_tпп = 20;
+    private final double delta_t = 5;
+    private final double pкн = 1.5;
     //КПД:
-    private double eta_oi_ЧВД = 0.88;
-    private double eta_oi_ЧНД = 0.85;
-    private double eta_oi_ПН = 0.74;
-    private double eta_oi_КН = 0.76;
-    private double eta_пг = 0.97;
-    private double eta_р = 0.95;
-    private double eta_мг = 0.98;
+    private final double eta_oi_ЧВД = 0.88;
+    private final double eta_oi_ЧНД = 0.85;
+    private final double eta_oi_ПН = 0.74;
+    private final double eta_oi_КН = 0.76;
+    private final double eta_пг = 0.97;
+    private final double eta_р = 0.95;
+    private final double eta_мг = 0.98;
     //Начальные параметры по варианту.
-    private double Qp;
-    private double p0;
-    private double pпп;
-    private double pk;
+    private final double Qp;
+    private final double p0;
+    private final double pпп;
+    private final double pk;
     private double tпв;
 
     public KursachCalculator(String name, double Qp, double p0, double pпп, double pk, double tпв) throws IOException {
@@ -48,7 +49,10 @@ public class KursachCalculator {
 
     }
 
-    ArrayList<WaterState> wsList;
+    private ArrayList<WaterState> wsList;
+    double l_pt, l_pt_ЧВД, l_pt_ЧНД;
+    double l_n, l_n_pn, l_n_kn;
+    double l_c, q1, eta_i, d0, q0, D0, N_e;
 
     private void doCalculations() throws IOException {
         wsList = new ArrayList<>();
@@ -350,12 +354,13 @@ public class KursachCalculator {
                 0 //x
         );
         wsList.add(ws_dr_3);
+
+        //Расчёт отборов
         double alpha_ot_1;
         double alpha_ot_2;
         double alpha_ot_3;
         double alpha_dr_s ;
         double alpha_dr_pp;
-        double alpha_pv;
 
         alpha_dr_s = ( ( H(ws_ot_1) - H(ws_dr_1) )/( H(ws_pv) - H(ws10) ) -1 ) /
                 /**/( ( (H(ws_dr_s) - H(ws3))/( H(ws3) - H(ws2) ) ) * ( ((H(ws3) - H(ws4))/(H(ws11) - H(ws_dr_pp))) - ((H(ws_ot_1) - H(ws_dr_1) )/(H(ws_pv) - H(ws10))) ) );/**/
@@ -392,6 +397,27 @@ public class KursachCalculator {
         ws11.setSelection(alpha_dr_pp);
         ws0.setSelection(ws_pv.getSelection());
         ws_dr_1.setSelection(alpha_ot_1);
+        ws_dr_3.setSelection(alpha_ot_3 + alpha_dr_s);
+
+        //Прочие характеристики
+        l_pt_ЧВД = (H(ws1) - H(ws2)) - alpha_ot_1 * (H(ws_ot_1) - H(ws2));
+        l_pt_ЧНД  = (1 - alpha_ot_1 - alpha_dr_s) * (H(ws4) - H(ws5)) -
+                alpha_ot_2 * (H(ws_ot_2) - H(ws5)) -
+                alpha_ot_3 * (H(ws_ot_3) - H(ws5));
+        l_pt = l_pt_ЧВД + l_pt_ЧНД;
+
+        l_n_pn = ws10.getSelection() * (H(ws10) - H(ws9));
+        l_n_kn = ws6.getSelection() * (H(ws7) - H(ws6));
+        l_n = l_n_kn + l_n_pn;
+
+        l_c = l_pt - l_n;
+
+        q1 = ws0.getSelection() * (H(ws1) - H(ws_pv));
+        eta_i = l_c / q1;
+        d0 = 3600/l_c;
+        q0 = 3600/eta_i;
+        D0 = Qp * 1000 / (q1 * eta_р * eta_мг);
+        N_e = D0 * l_c * eta_мг / 1000;
 
 //        for(WaterState ws: wsList) {
 //            ws.printParameters();
@@ -442,11 +468,39 @@ public class KursachCalculator {
                 rows[i].getCell(j).setText(sb.toString());
             }
         }
+        document.createParagraph().setPageBreak(false);
+        XWPFRun run = document.createParagraph().createRun();
+        run.setText("l_pt_ЧВД: " + l_pt_ЧВД);
+        run.addBreak();
+        run.setText("l_pt_ЧНД: " + l_pt_ЧНД);
+        run.addBreak();
+        run.setText("l_pt: " + l_pt);
+        run.addBreak();
+        run.setText("l_n_kn: " + l_n_kn);
+        run.addBreak();
+        run.setText("l_n_pn: " + l_n_pn);
+        run.addBreak();
+        run.setText("l_n: " + l_n);
+        run.addBreak();
+        run.setText("l_c: " + l_c);
+        run.addBreak();
+        run.setText("q1: " + q1);
+        run.addBreak();
+        run.setText("eta_i: " + eta_i);
+        run.addBreak();
+        run.setText("d0: " + d0);
+        run.addBreak();
+        run.setText("q0: " + q0);
+        run.addBreak();
+        run.setText("D0: " + D0);
+        run.addBreak();
+        run.setText("N_e: " + N_e);
+        run.addBreak();
 
         document.write(out);
         out.close();
         document.close();
-        System.out.println(name + ".docx written successully");
+        System.out.println(name + ".docx written successfully");
     }
 
 }
